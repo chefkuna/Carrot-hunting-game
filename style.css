@@ -6,6 +6,7 @@ button {
 
 body {
   text-align: center;
+  background-color: black;
 }
 
 .game {
@@ -49,6 +50,8 @@ body {
   margin-top: 8px;
   border-radius: 8px;
   visibility: hidden;
+  user-select: none;
+  cursor: auto;
 }
 
 .carrot__score {
@@ -62,6 +65,8 @@ body {
   color: white;
   margin-top: 8px;
   visibility: hidden;
+  user-select: none;
+  cursor: auto;
 }
 
 .game__field {
@@ -107,3 +112,7 @@ body {
   padding: 12px;
 }
 
+.carrot:hover,
+.bug:hover {
+  transform: scale(1.05);
+}
