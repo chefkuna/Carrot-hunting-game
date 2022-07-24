@@ -155,14 +155,23 @@ function initGame() {
 function addItem (className, count, imgPath) {
   for(let i=0; i<count; i++) {
     const item = document.createElement('img');
+    const x1 =0;
+    const y1 =0;
+    const x2 = fieldRect.width - CARROT_SIZE;
+    const y2 = fieldRect.height - CARROT_SIZE - 40;
     item.setAttribute('class', className);
     item.setAttribute('src', imgPath);
     item.style.position = 'absolute';
-    const x = Math.floor(Math.random()*(fieldRect.width-CARROT_SIZE));
-    const y = Math.floor(Math.random()*(fieldRect.height-CARROT_SIZE));
-
+    // const x = Math.floor(Math.random()*(fieldRect.width-CARROT_SIZE));
+    // const y = Math.floor(Math.random()*(fieldRect.height-CARROT_SIZE));
+    const x = randomNumber(x1, x2);
+    const y = randomNumber(y1, y2);
     item.style.left = `${x}px`;
     item.style.top = `${y}px`;
     gameField.appendChild(item);
   }
+}
+
+function randomNumber(min, max) {
+  return Math.random() * (max-min) + min;
 }
