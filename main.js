@@ -13,10 +13,9 @@ const popUp = document.querySelector('.popup');
 const popUpText = document.querySelector('.popup__result');
 const popUpReplay = document.querySelector('.popup__replay');
 
-
 let started = false;
-let score = 0;
 let timer = undefined;
+let score = 0;
 
 playBtn.addEventListener('click', ()=>{
   if(started) {
@@ -24,24 +23,60 @@ playBtn.addEventListener('click', ()=>{
   } else {
     startGame();
   }
-  started = !started;
+  // started = !started;
 })
 
-function stopGame() {
-  stopGameTimer();
-  hideGameButton();
-  showPopUpWithText('REPLAY❓');
+popUpReplay.addEventListener('click', ()=> {
+  popUp.classList.add('popup--hide');
+  startGame();
+})
+
+gameField.addEventListener('click', onFieldClick);
+
+function onFieldClick(event) {
+  if(!started) {
+    return;
+  }
+  if (event.target.matches('.carrot')) {
+    event.target.remove();
+    score++;
+    updateScoreBoard();
+    if(score === CARROT_COUNT) {
+      finishGame(true);
+    }
+  } else if (event.target.matches('.bug')) {
+    finishGame(false);
+  }
+}
+
+function updateScoreBoard() {
+  carrotScore.innerText = CARROT_COUNT - score;
 }
 
 function startGame() {
+  started = true;
   initGame();
   showStopButton();
   showTimerAndCount();
   startGameTimer();
 }
 
+function stopGame() {
+  started = false;
+  stopGameTimer();
+  hideGameButton();
+  showPopUpWithText('REPLAY❓');
+}
+
+function finishGame(win) {
+  started = false;
+  stopGameTimer();
+  hideGameButton();
+  showPopUpWithText(win ? 'YOU WON!😊' : 'YOU LOST...🐔');
+}
+
 function showStopButton() {
-  const icon = playBtn.querySelector('.fa-play');
+  const icon = playBtn.querySelector('.fa-solid');
   icon.classList.add('fa-stop');
   icon.classList.remove('fa-play');
 }
@@ -56,6 +91,7 @@ function startGameTimer () {
   timer = setInterval(() => {
     if(remainingTimeSec <= 0) {
       clearInterval(timer);
+      finishGame(CARROT_COUNT === carrotScore);
       return;
     }
     updateTimerText(--remainingTimeSec);
@@ -83,6 +119,7 @@ function showPopUpWithText(text) {
 }
 
 function initGame() {
+  score = 0;
   gameField.replaceChildren();    // field.innerHTML = '';
   carrotScore.innerText = CARROT_COUNT;
   addItem('carrot', CARROT_COUNT, 'img/carrot.png');
@@ -103,15 +140,3 @@ function addItem (className, count, imgPath) {
     gameField.appendChild(item);
   }
 }
-
-function Timer () {
-  setInterval(() => {
-    
-  }, 1000);
-}
-
-function myTimer() {
-
-}
-
-
