@@ -9,6 +9,10 @@ const fieldRect = gameField.getBoundingClientRect();
 const playBtn = document.querySelector('.play__button');
 const gameTimer = document.querySelector('.game__timer');
 const carrotScore = document.querySelector('.carrot__score');
+const popUp = document.querySelector('.popup');
+const popUpText = document.querySelector('.popup__result');
+const popUpReplay = document.querySelector('.popup__replay');
+
 
 let started = false;
 let score = 0;
@@ -24,7 +28,9 @@ playBtn.addEventListener('click', ()=>{
 })
 
 function stopGame() {
-
+  stopGameTimer();
+  hideGameButton();
+  showPopUpWithText('REPLAY❓');
 }
 
 function startGame() {
@@ -40,6 +46,10 @@ function showStopButton() {
   icon.classList.remove('fa-play');
 }
 
+function hideGameButton() {
+  playBtn.style.visibility = 'hidden';
+}
+
 function startGameTimer () {
   let remainingTimeSec = GAME_DURATION_SEC;
   updateTimerText(remainingTimeSec);
@@ -52,6 +62,10 @@ function startGameTimer () {
   }, 1000);
 }
 
+function stopGameTimer() {
+  clearInterval(timer);
+}
+
 function updateTimerText(time) {
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
@@ -61,6 +75,11 @@ function updateTimerText(time) {
 function showTimerAndCount() {
   gameTimer.style.visibility = 'visible';
   carrotScore.style.visibility = 'visible';
+}
+
+function showPopUpWithText(text) {
+  popUp.classList.remove('popup--hide');
+  popUpText.innerText = text;
 }
 
 function initGame() {
