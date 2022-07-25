@@ -1,19 +1,15 @@
 'use strict';
 import PopUp from './popup.js';
+import Field from './field.js';
 
-const CARROT_SIZE = 80;
 const CARROT_COUNT = 5;
 const BUG_COUNT = 5;
 const GAME_DURATION_SEC = 5;
 
-const gameField = document.querySelector('.game__field');
-const fieldRect = gameField.getBoundingClientRect();
 const playBtn = document.querySelector('.play__button');
 const gameTimer = document.querySelector('.game__timer');
 const carrotScore = document.querySelector('.carrot__score');
 
-
-const carrotsound = new Audio('./sound/carrot_pull.mp3');
 const alertsound = new Audio('./sound/alert.wav');
 const bgsound = new Audio('./sound/bg.mp3');
 const bugsound = new Audio('./sound/bug_pull.mp3');
@@ -24,9 +20,27 @@ let timer = undefined;
 let score = 0;
 
 const gameFinishBanner = new PopUp();
-gameFinishBanner.setClickListener( ()=> {
+gameFinishBanner.setClickListener(()=> {
   startGame();
 })
+
+const carrotGameField = new Field(CARROT_COUNT, BUG_COUNT);
+carrotGameField.setClickListener(onItemClick);
+
+function onItemClick(item) {
+  if(!started) {
+    return;
+  }
+  if ( item === 'carrot') {
+    score++;
+    updateScoreBoard();
+    if(score === CARROT_COUNT) {
+      finishGame(true);
+    }
+  } else if ( item === 'bug') {
+    finishGame(false);
+  }
+}
 
 playBtn.addEventListener('click', ()=>{
   if(started) {
@@ -35,25 +49,6 @@ playBtn.addEventListener('click', ()=>{
     startGame();
   }
 })
-
-gameField.addEventListener('click', onFieldClick);
-
-function onFieldClick(event) {
-  if(!started) {
-    return;
-  }
-  if (event.target.matches('.carrot')) {
-    event.target.remove();
-    score++;
-    playSound(carrotsound);
-    updateScoreBoard();
-    if(score === CARROT_COUNT) {
-      finishGame(true);
-    }
-  } else if (event.target.matches('.bug')) {
-    finishGame(false);
-  }
-}
 
 function playSound(sound) {
   sound.currentTime = 0;
@@ -140,32 +135,7 @@ function showTimerAndCount() {
 
 function initGame() {
   score = 0;
-  gameField.replaceChildren();    // field.innerHTML = '';
   carrotScore.innerText = CARROT_COUNT;
-  addItem('carrot', CARROT_COUNT, 'img/carrot.png');
-  addItem('bug', BUG_COUNT, 'img/bug.png');
+  carrotGameField.init();
 }
 
-function addItem (className, count, imgPath) {
-  for(let i=0; i<count; i++) {
-    const item = document.createElement('img');
-    const x1 =0;
-    const y1 =0;
-    const x2 = fieldRect.width - CARROT_SIZE;
-    const y2 = fieldRect.height - CARROT_SIZE - 40;
-    item.setAttribute('class', className);
-    item.setAttribute('src', imgPath);
-    item.style.position = 'absolute';
-    // const x = Math.floor(Math.random()*(fieldRect.width-CARROT_SIZE));
-    // const y = Math.floor(Math.random()*(fieldRect.height-CARROT_SIZE));
-    const x = randomNumber(x1, x2);
-    const y = randomNumber(y1, y2);
-    item.style.left = `${x}px`;
-    item.style.top = `${y}px`;
-    gameField.appendChild(item);
-  }
-}
-
-function randomNumber(min, max) {
-  return Math.random() * (max-min) + min;
-}
