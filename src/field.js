@@ -9,7 +9,7 @@ export default class Field {
     this.gameField = document.querySelector('.game__field');
     this.fieldRect = this.gameField.getBoundingClientRect();
 
-    this.gameField.addEventListener('click', this.onClick);
+    this.gameField.addEventListener('click', (event) => this.onClick(event)); //this 바인딩
   }
 
   setClickListener(onItemClick) {
@@ -21,8 +21,7 @@ export default class Field {
       event.target.remove();
       sound.playCarrot();
       this.onItemClick && this.onItemClick('carrot');
-    }
-    else if (event.target.matches('.bug')) {
+    } else if (event.target.matches('.bug')) {
       this.onItemClick && this.onItemClick('bug');
     }
   }
